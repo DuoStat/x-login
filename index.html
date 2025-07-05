@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - </title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      background-color: #f0f0f0;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Vídeo de fundo */
+    video#background-video {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: -1;
+    }
+
+    .login-container {
+      text-align: center;
+      z-index: 1;
+      background: rgba(171, 7, 7, 0.5);
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+      width: 350px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .login-container h2 {
+      font-size: 24px;
+      margin-bottom: 20px;
+      color: #fff;
+    }
+
+    .login-container input[type="password"] {
+      padding: 10px;
+      font-size: 16px;
+      margin-bottom: 20px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      width: 80%;
+    }
+
+    .login-container button {
+      padding: 10px 20px;
+      font-size: 16px;
+      margin: 5px 0;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .error-message {
+      color: red;
+      display: none;
+      margin-top: 10px;
+      font-size: 14px;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    /* Estilo do iframe para exibir o conteúdo de forma horizontal */
+    iframe {
+      width: 100vw;
+      height: 100vh;
+      border: none;
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+  </style>
+</head>
+<body>
+
+  <video id="background-video" autoplay loop muted>
+    <source src="https://hackerdominesalife00.netlify.app/media/3585079191-preview.mp4_1728018529513-_uhUTxz9.mp4" type="video/mp4">
+    Seu navegador não suporta o formato de vídeo.
+  </video>
+
+  <div class="login-container" id="login-container">
+    <h2>Login</h2>
+    <input type="password" id="password" placeholder="Digite a senha">
+    <button onclick="login()">Entrar</button>
+    <p id="error-message" class="error-message">Senha incorreta. Tente novamente.</p>
+  </div>
+
+  <div id="iframe-container" class="hidden">
+    <iframe id="site-frame" src="" frameborder="0"></iframe>
+  </div>
+
+  <script>
+    // Lista de senhas válidas
+    const validPasswords = [
+      'manu1122', 'doublesite1189', 'doublesite1329', 'doublesite9627',
+      'doublesite9247', 'doublesite1874', 'doublesite9693', 'doublesite5155',
+      'doublesite8732', 'doublesite7815', 'doublesite3149', 'doublesite8206',
+      'doublesite5702', 'doublesite4510', 'doublesite6115', 'doublesite9823',
+      'doublesite9430', 'doublesite1894', 'doublesite7463', 'doublesite7328',
+      'doublesite8250', 'doublesite4760', 'doublesite6154', 'doublesite1463',
+      'doublesite7278', 'doublesite1021', 'doublesite8962', 'doublesite3875',
+      'doublesite8506', 'doublesite3192', 'doublesite4653', 'doublesite9235',
+      'doublesite3287', 'doublesite5102', 'doublesite5941', 'doublesite1907',
+      'doublesite6894', 'doublesite2457', 'doublesite7984', 'doublesite5127',
+      'doublesite6295', 'doublesite7041', 'doublesite3645', 'doublesite1590',
+      'doublesite5221', 'doublesite8192', 'doublesite4791', 'doublesite3629',
+      'doublesite9873', 'doublesite1287', 'doublesite5162', 'doublesite3468',
+      'doublesite2938', 'doublesite4916', 'doublesite6842', 'doublesite4379',
+      'doublesite2301', 'doublesite4280', 'doublesite5768', 'doublesite4517',
+      'doublesite2976', 'doublesite8354', 'doublesite6719', 'doublesite1824',
+      'doublesite2168', 'doublesite1543', 'doublesite5307', 'doublesite7890',
+      'doublesite2081', 'doublesite4276', 'doublesite6920', 'doublesite3985',
+      'doublesite7013', 'doublesite1245', 'doublesite8003', 'doublesite3194',
+      'doublesite9038', 'doublesite9243', 'doublesite3105', 'doublesite4829',
+      'doublesite5706', 'doublesite2087', 'doublesite3207', 'doublesite6491',
+      'doublesite4872', 'doublesite5067', 'doublesite7741', 'doublesite2319',
+      'doublesite9052', 'doublesite3478', 'doublesite6475', 'doublesite1910',
+      'doublesite3927', 'doublesite3924', 'doublesite6014', 'doublesite9187',
+      'doublesite4239', 'doublesite1842', 'doublesite5769', 'doublesite2713',
+      'doublesite4017', 'doublesite7853', 'doublesite2152', 'doublesite6705',
+      'doublesite6408', 'doublesite1679', 'doublesite4765', 'doublesite7185',
+      'doublesite4979', 'doublesite3426', 'doublesite6958', 'doublesite5864',
+      'doublesite8014', 'doublesite2962', 'doublesite8359', 'doublesite9104',
+      'doublesite9137', 'doublesite8353', 'doublesite1630', 'doublesite2781',
+      'doublesite5247', 'doublesite8642', 'doublesite3746', 'doublesite4085',
+      'doublesite8165', 'doublesite2957', 'doublesite3199', 'doublesite8296',
+      'doublesite4730', 'doublesite6721', 'doublesite5974', 'doublesite6018',
+      'doublesite4836', 'doublesite7421', 'doublesite4321', 'doublesite5487',
+      'doublesite6497', 'doublesite9732', 'doublesite3495', 'doublesite7289',
+      'doublesite8963', 'doublesite7260', 'doublesite3811', 'doublesite7425',
+      'doublesite9244', 'doublesite6756', 'doublesite2386', 'doublesite1493',
+      'doublesite5149', 'doublesite1921', 'doublesite8357', 'doublesite6548',
+      'doublesite1745', 'doublesite2979', 'doublesite3154', 'doublesite2098',
+      'doublesite7631', 'doublesite6482', 'doublesite3926', 'doublesite7078',
+      'doublesite6572', 'doublesite8349', 'doublesite8196', 'doublesite1435',
+      'doublesite9227', 'doublesite1325', 'doublesite6375', 'doublesite7262',
+      'doublesite9724', 'doublesite5170', 'doublesite4213', 'doublesite9246',
+      'doublesite1097', 'doublesite4652', 'doublesite4314', 'doublesite9736',
+      'doublesite8297', 'doublesite5402', 'doublesite8214', 'doublesite5279',
+      'doublesite9546', 'doublesite7361', 'doublesite1974', 'doublesite4386',
+      'doublesite5397', 'doublesite1227', 'doublesite7327', 'doublesite4382',
+      'doublesite7925', 'doublesite8041', 'doublesite4395', 'doublesite7832',
+      'doublesite5729', 'doublesite7591', 'doublesite9041', 'doublesite2285',
+      'doublesite7084', 'doublesite7429', 'doublesite3750', 'doublesite8232',
+      'doublesite5406', 'doublesite5429', 'doublesite5749', 'doublesite4387',
+      'doublesite1027', 'doublesite7683', 'doublesite4769', 'doublesite8924',
+      'doublesite6349', 'doublesite9031', 'doublesite8932', 'doublesite1058',
+      'doublesite2534', 'doublesite5357', 'doublesite6819', 'doublesite7595',
+      'doublesite2749', 'doublesite3254', 'doublesite6970', 'doublesite2639',
+      'doublesite8420', 'doublesite4822', 'doublesite8084', 'doublesite3726',
+      'doublesite4903', 'doublesite8417', 'doublesite8694', 'doublesite3040',
+      'doublesite3778', 'doublesite6013', 'doublesite8257', 'doublesite7462',
+      'doublesite7021', 'doublesite8024', 'doublesite5563', 'doublesite6372',
+      'doublesite4132', 'doublesite2461', 'doublesite4869', 'doublesite3943',
+      'doublesite5960', 'doublesite8124', 'doublesite6385', 'doublesite7179',
+      'doublesite1323', 'doublesite7483', 'doublesite1914', 'doublesite9715',
+      'doublesite3567', 'doublesite1567', 'doublesite2012', 'doublesite2817',
+      'doublesite2978', 'doublesite8564', 'doublesite9674', 'doublesite4659',
+      'doublesite9646', 'doublesite4045', 'doublesite2645', 'doublesite9435',
+      'doublesite4320', 'doublesite2273', 'doublesite5079', 'doublesite3917',
+      'doublesite5942', 'doublesite6590', 'doublesite7863', 'doublesite6067',
+      'doublesite5093', 'doublesite3342', 'doublesite9534', 'doublesite9640',
+      'doublesite5419', 'doublesite8946', 'doublesite4797', 'doublesite1625',
+      'doublesite3178', 'doublesite6609', 'doublesite8705', 'doublesite2845',
+      'doublesite9712', 'doublesite9394', 'doublesite3100', 'doublesite2788',
+      'doublesite4733', 'doublesite8941', 'doublesite4212', 'doublesite3920',
+      'doublesite6890', 'doublesite3037', 'doublesite8534', 'doublesite8318',
+      'doublesite8990', 'doublesite6171', 'doublesite6718', 'doublesite1985',
+      'doublesite1393', 'doublesite2670', 'doublesite1361', 'doublesite2470',
+      'doublesite6782', 'doublesite8323', 'doublesite4474', 'doublesite9297',
+      'doublesite8659', 'doublesite2539', 'doublesite1689', 'doublesite1912'
+    ];
+
+    function login() {
+      const password = document.getElementById('password').value;
+      const errorMessage = document.getElementById('error-message');
+
+      // Verifica se a senha está na lista de senhas válidas
+      if (validPasswords.includes(password)) {
+        // Esconde a tela de login
+        document.getElementById('login-container').classList.add('hidden');
+
+        // Exibe o iframe com o conteúdo do site desejado
+        document.getElementById('iframe-container').classList.remove('hidden');
+        document.getElementById('site-frame').src = "https://duostat.github.io/number-x/";
+
+      } else {
+        // Exibe a mensagem de erro caso a senha seja inválida
+        errorMessage.style.display = 'block';
+      }
+    }
+  </script>
+</body>
+</html>
